@@ -2,9 +2,60 @@ pub mod tokenization;
 
 #[cfg(test)]
 mod tests {
+    use crate::tokenization::Token;
+
     #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+    fn test_tokenization() {
+        assert_eq!(Token::None, Token::from(String::from("")));
+        assert_eq!(
+            Token::Text(Box::new([
+                String::from("Hello"),
+                String::from("there"),
+                String::from("!")
+            ])),
+            Token::from(String::from("Hello there!"))
+        );
+        assert_eq!(
+            Token::Text(Box::new([
+                String::from("This"),
+                String::from(","),
+                String::from("is"),
+                String::from("."),
+                String::from("a"),
+                String::from("string"),
+                String::from("."),
+                String::from("That"),
+                String::from("is"),
+                String::from("harder"),
+                String::from("!"),
+                String::from("to"),
+                String::from("parse"),
+                String::from("?"),
+                String::from("Does"),
+                String::from("-"),
+                String::from("it"),
+                String::from("_"),
+                String::from("work"),
+                String::from("?"),
+                String::from("Who"),
+                String::from("Knows"),
+                String::from(";")
+            ])),
+            Token::from(String::from(
+                "This, is. a string. That is harder! to parse? Does- it_ work? Who Knows;"
+            ))
+        );
+        assert_eq!(
+            Token::Text(Box::new([
+                String::from("("),
+                String::from("Another"),
+                String::from("difficult"),
+                String::from(":"),
+                String::from("'"),
+                String::from("string"),
+                String::from(")"),
+            ])),
+            Token::from(String::from("(Another difficult: ' string)"))
+        );
     }
 }

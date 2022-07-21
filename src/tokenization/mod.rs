@@ -1,19 +1,24 @@
-pub enum Tokenized {
+#[derive(PartialEq, Debug)]
+pub enum Token {
     Text(Box<[String]>),
     None,
 }
 
-impl Tokenized {
-    fn from_string(input: String) -> crate::tokenization::Tokenized {
+impl Token {}
+
+impl From<String> for Token {
+    fn from(input: String) -> crate::tokenization::Token {
         if input.is_empty() {
-            return Tokenized::None;
+            return Token::None;
+        }
+        let mut spaced_text: String = input;
+        for character in ['-', '_', '"', '?', '!', '.', ',', '(', ')', ';', '\'', ':'].iter() {
+            spaced_text = spaced_text.replace(&character.to_string(), &format!(" {character} "));
         }
         let mut split_text: Vec<String> = Vec::new();
-        for word in input.split_whitespace() {
-            for sub_string in word.split(&['-', '_', '"', '?', '!', '.', ',', '(', ')']) {
-                split_text.push(String::from(sub_string));
-            }
+        for word in spaced_text.split_whitespace() {
+            split_text.push(String::from(word));
         }
-        return Tokenized::Text(split_text.into_boxed_slice());
+        return Token::Text(split_text.into_boxed_slice());
     }
 }
