@@ -57,5 +57,15 @@ mod tests {
             ])),
             Token::from(String::from("(Another difficult: ' string)"))
         );
+        assert_eq!(
+            Token::Text(Box::new([
+                String::from("This"),
+                String::from("one"),
+                String::from("has"),
+                String::from("escapes"),
+                String::from(".")
+            ])),
+            Token::from(String::from("This \n one has\r escapes."))
+        );
     }
 }
