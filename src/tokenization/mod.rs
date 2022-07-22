@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 #[derive(PartialEq, Debug)]
 pub enum Token {
     Text(Box<[String]>),
@@ -15,10 +17,38 @@ impl From<String> for Token {
         for character in ['-', '_', '"', '?', '!', '.', ',', '(', ')', ';', '\'', ':'].iter() {
             spaced_text = spaced_text.replace(&character.to_string(), &format!(" {character} "));
         }
-        let mut split_text: Vec<String> = Vec::new();
-        for word in spaced_text.split_whitespace() {
-            split_text.push(String::from(word));
+
+        return Token::Text(
+            spaced_text
+                .split_whitespace()
+                .map(|string_reference| string_reference.to_owned())
+                .collect::<Vec<String>>()
+                .into_boxed_slice(),
+        );
+    }
+}
+
+impl Add for Token {
+    type Output = Self;
+    fn add(self, other: Self) -> Self {
+        match self {
+            Token::None => match other {
+                Token::None => return Token::None,
+                Token::Text(text) => return Token::Text(text),
+            },
+            Token::Text(text_self) => match other {
+                Token::None => return Token::None,
+                Token::Text(text_other) => {
+                    return Token::Text(
+                        (*text_self)
+                            .into_iter()
+                            .chain((*text_other).into_iter())
+                            .map(|string_reference| string_reference.to_owned())
+                            .collect::<Vec<String>>()
+                            .into_boxed_slice(),
+                    )
+                }
+            },
         }
-        return Token::Text(split_text.into_boxed_slice());
     }
 }
