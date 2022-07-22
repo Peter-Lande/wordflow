@@ -28,6 +28,12 @@ impl From<String> for Token {
     }
 }
 
+impl From<&str> for Token {
+    fn from(input: &str) -> crate::tokenization::Token {
+        Self::from(String::from(input))
+    }
+}
+
 impl Add for Token {
     type Output = Self;
     fn add(self, other: Self) -> Self {
