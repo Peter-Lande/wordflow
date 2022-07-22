@@ -2,155 +2,168 @@ pub mod tokenization;
 
 #[cfg(test)]
 mod tests {
-    use crate::tokenization::Token;
+    use crate::tokenization::{Sentence, Token};
 
     #[test]
-    fn test_from_string() {
+    fn test_from_string_token() {
+        assert_eq!(Token::from(String::from("")), Token::None);
+        assert_eq!(
+            Token::from(String::from("Hello")),
+            Token::Text(String::from("Hello"))
+        );
+    }
+
+    #[test]
+    fn test_from_str_token() {
+        assert_eq!(Token::from(""), Token::None);
+        assert_eq!(Token::from("Hello"), Token::Text(String::from("Hello")));
+    }
+
+    #[test]
+    fn test_from_string_sentence() {
         assert_eq!(Token::None, Token::from(String::from("")));
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("Hello"),
-                String::from("there"),
-                String::from("!")
+            Sentence::Text(Box::new([
+                Token::from("Hello"),
+                Token::from("there"),
+                Token::from("!")
             ])),
-            Token::from(String::from("Hello there!"))
+            Sentence::from(String::from("Hello there!"))
         );
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("This"),
-                String::from(","),
-                String::from("is"),
-                String::from("."),
-                String::from("a"),
-                String::from("string"),
-                String::from("."),
-                String::from("That"),
-                String::from("is"),
-                String::from("harder"),
-                String::from("!"),
-                String::from("to"),
-                String::from("parse"),
-                String::from("?"),
-                String::from("Does"),
-                String::from("-"),
-                String::from("it"),
-                String::from("_"),
-                String::from("work"),
-                String::from("?"),
-                String::from("Who"),
-                String::from("Knows"),
-                String::from(";")
+            Sentence::Text(Box::new([
+                Token::from("This"),
+                Token::from(","),
+                Token::from("is"),
+                Token::from("."),
+                Token::from("a"),
+                Token::from("string"),
+                Token::from("."),
+                Token::from("That"),
+                Token::from("is"),
+                Token::from("harder"),
+                Token::from("!"),
+                Token::from("to"),
+                Token::from("parse"),
+                Token::from("?"),
+                Token::from("Does-"),
+                Token::from("it_"),
+                Token::from("work"),
+                Token::from("?"),
+                Token::from("Who"),
+                Token::from("Knows"),
+                Token::from(";")
             ])),
-            Token::from(String::from(
+            Sentence::from(String::from(
                 "This, is. a string. That is harder! to parse? Does- it_ work? Who Knows;"
             ))
         );
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("("),
-                String::from("Another"),
-                String::from("difficult"),
-                String::from(":"),
-                String::from("'"),
-                String::from("string"),
-                String::from(")"),
+            Sentence::Text(Box::new([
+                Token::from("("),
+                Token::from("Another"),
+                Token::from("difficult"),
+                Token::from(":"),
+                Token::from("'"),
+                Token::from("string"),
+                Token::from(")"),
             ])),
-            Token::from(String::from("(Another difficult: ' string)"))
+            Sentence::from(String::from("(Another difficult: ' string)"))
         );
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("This"),
-                String::from("one"),
-                String::from("has"),
-                String::from("escapes"),
-                String::from(".")
+            Sentence::Text(Box::new([
+                Token::from("This"),
+                Token::from("one"),
+                Token::from("has"),
+                Token::from("escapes"),
+                Token::from(".")
             ])),
-            Token::from(String::from("This \n one has\r escapes."))
+            Sentence::from(String::from("This \n one has\r escapes."))
         );
     }
 
     #[test]
-    fn test_from_str() {
-        assert_eq!(Token::None, Token::from(""));
+    fn test_from_str_sentence() {
+        assert_eq!(Sentence::None, Sentence::from(""));
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("Hello"),
-                String::from("there"),
-                String::from("!")
+            Sentence::Text(Box::new([
+                Token::from("Hello"),
+                Token::from("there"),
+                Token::from("!")
             ])),
-            Token::from("Hello there!")
+            Sentence::from("Hello there!")
         );
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("This"),
-                String::from(","),
-                String::from("is"),
-                String::from("."),
-                String::from("a"),
-                String::from("string"),
-                String::from("."),
-                String::from("That"),
-                String::from("is"),
-                String::from("harder"),
-                String::from("!"),
-                String::from("to"),
-                String::from("parse"),
-                String::from("?"),
-                String::from("Does"),
-                String::from("-"),
-                String::from("it"),
-                String::from("_"),
-                String::from("work"),
-                String::from("?"),
-                String::from("Who"),
-                String::from("Knows"),
-                String::from(";")
+            Sentence::Text(Box::new([
+                Token::from("This"),
+                Token::from(","),
+                Token::from("is"),
+                Token::from("."),
+                Token::from("a"),
+                Token::from("string"),
+                Token::from("."),
+                Token::from("That"),
+                Token::from("is"),
+                Token::from("harder"),
+                Token::from("!"),
+                Token::from("to"),
+                Token::from("parse"),
+                Token::from("?"),
+                Token::from("Does-"),
+                Token::from("it_"),
+                Token::from("work"),
+                Token::from("?"),
+                Token::from("Who"),
+                Token::from("Knows"),
+                Token::from(";")
             ])),
-            Token::from("This, is. a string. That is harder! to parse? Does- it_ work? Who Knows;")
+            Sentence::from(
+                "This, is. a string. That is harder! to parse? Does- it_ work? Who Knows;"
+            )
         );
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("("),
-                String::from("Another"),
-                String::from("difficult"),
-                String::from(":"),
-                String::from("'"),
-                String::from("string"),
-                String::from(")"),
+            Sentence::Text(Box::new([
+                Token::from("("),
+                Token::from("Another"),
+                Token::from("difficult"),
+                Token::from(":"),
+                Token::from("'"),
+                Token::from("string"),
+                Token::from(")"),
             ])),
-            Token::from("(Another difficult: ' string)")
+            Sentence::from("(Another difficult: ' string)")
         );
         assert_eq!(
-            Token::Text(Box::new([
-                String::from("This"),
-                String::from("one"),
-                String::from("has"),
-                String::from("escapes"),
-                String::from(".")
+            Sentence::Text(Box::new([
+                Token::from("This"),
+                Token::from("one"),
+                Token::from("has"),
+                Token::from("escapes"),
+                Token::from(".")
             ])),
-            Token::from("This \n one has\r escapes.")
+            Sentence::from("This \n one has\r escapes.")
         );
     }
 
     #[test]
-    fn test_add_token() {
+    fn test_add_sentence() {
         assert_eq!(
-            Token::from(String::from("")) + Token::from(String::from("")),
-            Token::None
+            Sentence::from(String::from("")) + Sentence::from(String::from("")),
+            Sentence::None
         );
         assert_eq!(
-            Token::from(String::from("Hello")) + Token::from(String::from("")),
-            Token::from(String::from("Hello"))
+            Sentence::from(String::from("Hello")) + Sentence::from(String::from("")),
+            Sentence::from(String::from("Hello"))
         );
         assert_eq!(
-            Token::from(String::from("")) + Token::from(String::from("Hello")),
-            Token::from(String::from("Hello"))
+            Sentence::from(String::from("")) + Sentence::from(String::from("Hello")),
+            Sentence::from(String::from("Hello"))
         );
         assert_eq!(
-            Token::from(String::from("Hello"))
-                + Token::from(String::from(" "))
-                + Token::from(String::from("There")),
-            Token::from(String::from("Hello There"))
+            Sentence::from(String::from("Hello"))
+                + Sentence::from(String::from(" "))
+                + Sentence::from(String::from("There")),
+            Sentence::from(String::from("Hello There"))
         );
     }
 }
