@@ -67,5 +67,23 @@ mod tests {
             ])),
             Token::from(String::from("This \n one has\r escapes."))
         );
+        assert_eq!(
+            Token::from(String::from("")) + Token::from(String::from("")),
+            Token::None
+        );
+        assert_eq!(
+            Token::from(String::from("Hello")) + Token::from(String::from("")),
+            Token::from(String::from("Hello"))
+        );
+        assert_eq!(
+            Token::from(String::from("")) + Token::from(String::from("Hello")),
+            Token::from(String::from("Hello"))
+        );
+        assert_eq!(
+            Token::from(String::from("Hello"))
+                + Token::from(String::from(" "))
+                + Token::from(String::from("There")),
+            Token::from(String::from("Hello There"))
+        );
     }
 }

@@ -37,7 +37,7 @@ impl Add for Token {
                 Token::Text(text) => return Token::Text(text),
             },
             Token::Text(text_self) => match other {
-                Token::None => return Token::None,
+                Token::None => return Token::Text(text_self),
                 Token::Text(text_other) => {
                     return Token::Text(
                         (*text_self)
