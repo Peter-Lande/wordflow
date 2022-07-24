@@ -1,5 +1,9 @@
-pub mod tokenization;
+#![deny(missing_docs)]
+//! Wordflow:  A natural language processing library
+//!
 
+///The tokenization module contains objects and functions for tokenizing strings.
+pub mod tokenization;
 #[cfg(test)]
 mod tests {
     use crate::tokenization::{Sentence, Token};

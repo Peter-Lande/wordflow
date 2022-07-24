@@ -2,27 +2,31 @@ use std::cmp;
 use std::hash::Hash;
 use std::ops::Add;
 
+///A Token represents individual parts of a sentence.
 #[derive(Debug, Clone)]
 pub enum Token {
+    ///Text is a variant of Token that stores an individual Token.
     Text(String),
+    ///None is a variant of Token that represents an empty Token
     None,
 }
 
 impl Token {
+    ///The len function returns the number of characters in a Token
     pub fn len(&self) -> usize {
         match self {
             Token::None => return 0,
             Token::Text(text) => return text.chars().count(),
         }
     }
-
+    ///The as_string function gives ownership of the Token in the form of a String
     pub fn as_string(&self) -> String {
         match self {
             Token::None => return String::from(""),
-            Token::Text(text) => return text.to_string(),
+            Token::Text(text) => return text.to_owned(),
         }
     }
-
+    ///The min_edit_distance function gives a usize representing the number of edits required to turn the calling Token into the passed Token.
     pub fn min_edit_distance(&self, other: &Token) -> usize {
         if self == other {
             return 0;
@@ -85,9 +89,12 @@ impl Hash for Token {
     }
 }
 
+///A Sentence is a collection of multiple Tokens.
 #[derive(PartialEq, Debug)]
 pub enum Sentence {
+    ///The Text variant is a filled collection of Tokens
     Text(Box<[Token]>),
+    ///The None variant is an empty collection of Tokens
     None,
 }
 
