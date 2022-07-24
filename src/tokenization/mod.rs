@@ -1,13 +1,61 @@
+use std::cmp;
 use std::ops::Add;
-//TODO Make tokens a single string and add a structure that represents a slice of Tokens, maybe call it a sentence?
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub enum Token {
     Text(String),
     None,
 }
 
-impl Token {}
+impl Token {
+    pub fn len(&self) -> usize {
+        match self {
+            Token::None => return 0,
+            Token::Text(text) => return text.chars().count(),
+        }
+    }
+
+    pub fn as_string(&self) -> String {
+        match self {
+            Token::None => return String::from(""),
+            Token::Text(text) => return text.to_string(),
+        }
+    }
+
+    pub fn min_edit_distance(&self, other: &Token) -> usize {
+        if self == other {
+            return 0;
+        }
+        let self_length: usize = self.len();
+        let other_length: usize = other.len();
+        let mut edit_distance: Vec<Vec<usize>> = vec![vec![0; self_length + 1]; other_length + 1];
+        for row_index in 1..self_length + 1 {
+            edit_distance[0][row_index] = edit_distance[0][row_index - 1] + 1;
+        }
+        for column_index in 1..other_length + 1 {
+            edit_distance[column_index][0] = edit_distance[column_index - 1][0] + 1;
+        }
+        for row_index in 1..other_length + 1 {
+            for column_index in 1..self_length + 1 {
+                let a: usize = if self.as_string().chars().nth(column_index - 1)
+                    == other.as_string().chars().nth(row_index - 1)
+                {
+                    0
+                } else {
+                    2
+                };
+                edit_distance[row_index][column_index] = cmp::min(
+                    edit_distance[row_index - 1][column_index] + 1,
+                    cmp::min(
+                        edit_distance[row_index][column_index - 1] + 1,
+                        edit_distance[row_index - 1][column_index - 1] + a,
+                    ),
+                )
+            }
+        }
+        return edit_distance[other_length][self_length];
+    }
+}
 
 impl From<String> for Token {
     fn from(input: String) -> Token {
@@ -21,6 +69,12 @@ impl From<String> for Token {
 impl From<&str> for Token {
     fn from(input: &str) -> Token {
         Self::from(String::from(input))
+    }
+}
+
+impl PartialEq for Token {
+    fn eq(&self, other: &Self) -> bool {
+        return self.as_string() == other.as_string();
     }
 }
 
@@ -38,11 +92,10 @@ impl From<String> for Sentence {
             return Sentence::None;
         }
         let mut spaced_text: String = input;
-        //We choose to use Penn Treebank Tokenization, which keeps hypentated words together, separates out punctuation, and separates clitics.
+        //We choose to use tokenize by keeping hypentated words together and separating out punctuation.
         for character in ['"', '?', '!', '.', ',', '(', ')', ';', ':', '$'].iter() {
             spaced_text = spaced_text.replace(&character.to_string(), &format!(" {character} "));
         }
-        //TODO Separate out clitics.
 
         return Sentence::Text(
             spaced_text

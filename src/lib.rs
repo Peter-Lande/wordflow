@@ -20,6 +20,42 @@ mod tests {
     }
 
     #[test]
+    fn test_len_token() {
+        assert_eq!(Token::None.len(), 0);
+        assert_eq!(Token::from("Hello").len(), 5);
+        assert_eq!(Token::from("").len(), 0);
+    }
+
+    #[test]
+    fn test_as_string_token() {
+        assert_eq!(Token::None.as_string(), String::from(""));
+        assert_eq!(Token::from("Hello").as_string(), String::from("Hello"));
+        assert_eq!(Token::from("").as_string(), String::from(""));
+    }
+
+    #[test]
+    fn test_min_edit_distance_token() {
+        assert_eq!(Token::None.min_edit_distance(&Token::None), 0);
+        assert_eq!(
+            Token::from("execution").min_edit_distance(&Token::from("intention")),
+            8
+        );
+        assert_eq!(
+            Token::from("Hello").min_edit_distance(&Token::from("Higher")),
+            7
+        );
+        assert_eq!(
+            Token::from("Hello").min_edit_distance(&Token::from("World")),
+            8
+        );
+
+        assert_eq!(
+            Token::from("There").min_edit_distance(&Token::from("Amazing")),
+            12
+        );
+    }
+
+    #[test]
     fn test_from_string_sentence() {
         assert_eq!(Token::None, Token::from(String::from("")));
         assert_eq!(
