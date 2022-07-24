@@ -1,4 +1,5 @@
 use std::cmp;
+use std::hash::Hash;
 use std::ops::Add;
 
 #[derive(Debug, Clone)]
@@ -75,6 +76,12 @@ impl From<&str> for Token {
 impl PartialEq for Token {
     fn eq(&self, other: &Self) -> bool {
         return self.as_string() == other.as_string();
+    }
+}
+
+impl Hash for Token {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.as_string().hash(state);
     }
 }
 
