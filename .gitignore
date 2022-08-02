@@ -1,4 +1,4 @@
-/wordflow/target
+/wordflow/target/
 /wordflow/Cargo.lock
-/wordflow/.vscode
+/wordflow/.vscode/
 .DS_Store
