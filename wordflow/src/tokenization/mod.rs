@@ -19,7 +19,7 @@ impl Token {
             Token::Text(text) => return text.chars().count(),
         }
     }
-    ///The as_string function gives ownership of the Token in the form of a String
+    ///The as_string function returns text held in a Token
     pub fn as_string(&self) -> String {
         match self {
             Token::None => return String::from(""),
@@ -98,7 +98,21 @@ pub enum Sentence {
     None,
 }
 
-impl Sentence {}
+impl Sentence {
+    ///The as_string function returns the concatenation of all the tokens in the Sentence
+    pub fn as_string(&self) -> String {
+        match self {
+            Sentence::None => return String::from(""),
+            Sentence::Text(tokens) => {
+                return tokens
+                    .iter()
+                    .map(|text| text.as_string())
+                    .collect::<Vec<String>>()
+                    .concat()
+            }
+        }
+    }
+}
 
 impl From<String> for Sentence {
     fn from(input: String) -> Sentence {
@@ -149,5 +163,11 @@ impl Add for Sentence {
                 }
             },
         }
+    }
+}
+
+impl Hash for Sentence {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.as_string().hash(state);
     }
 }
