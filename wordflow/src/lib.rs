@@ -4,6 +4,9 @@
 
 ///The tokenization module contains objects and functions for tokenizing strings.
 pub mod tokenization;
+
+///The containers module contains structs for processing data.
+pub mod containers;
 #[cfg(test)]
 mod tests {
     use crate::tokenization::{Sentence, Token};
