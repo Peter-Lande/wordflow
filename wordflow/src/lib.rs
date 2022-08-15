@@ -9,6 +9,7 @@ pub mod tokenization;
 pub mod containers;
 #[cfg(test)]
 mod tests {
+    use crate::containers;
     use crate::tokenization::{Sentence, Token};
 
     #[test]
@@ -61,6 +62,7 @@ mod tests {
             12
         );
     }
+    //End of Token tests
 
     #[test]
     fn test_from_string_sentence() {
@@ -209,4 +211,9 @@ mod tests {
             Sentence::from(String::from("Hello There"))
         );
     }
+
+    #[test]
+    //End of Sentence tests
+    #[test]
+    fn test_new_ngram() {}
 }

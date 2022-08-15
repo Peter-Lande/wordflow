@@ -1,9 +1,11 @@
+#![deny(missing_docs)]
+
 use std::cmp;
 use std::hash::Hash;
 use std::ops::Add;
 
 ///A Token represents individual parts of a sentence.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq)]
 pub enum Token {
     ///Text is a variant of Token that stores an individual Token.
     Text(String),
@@ -90,7 +92,7 @@ impl Hash for Token {
 }
 
 ///A Sentence is a collection of multiple Tokens.
-#[derive(PartialEq, Debug)]
+#[derive(Debug, Clone, Eq)]
 pub enum Sentence {
     ///The Text variant is a filled collection of Tokens
     Text(Box<[Token]>),
@@ -110,6 +112,13 @@ impl Sentence {
                     .collect::<Vec<String>>()
                     .concat()
             }
+        }
+    }
+    ///Returns the length of a sentence which is the number of tokens in the boxed slice.
+    pub fn len(&self) -> usize {
+        match self {
+            Sentence::None => return 0,
+            Sentence::Text(tokens) => return tokens.len(),
         }
     }
 }
@@ -169,5 +178,11 @@ impl Add for Sentence {
 impl Hash for Sentence {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         self.as_string().hash(state);
+    }
+}
+
+impl PartialEq for Sentence {
+    fn eq(&self, other: &Self) -> bool {
+        return self.as_string() == other.as_string();
     }
 }
